@@ -1,5 +1,6 @@
 import pygame
 import time
+# Teste
 
 class DialogueBox:
 

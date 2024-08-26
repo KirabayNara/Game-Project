@@ -1,6 +1,5 @@
 import pygame
 import time
-# Teste
 
 class DialogueBox:
 
@@ -39,7 +38,7 @@ class DialogueBox:
             pygame.display.update()
             time.sleep(0.02)  # Pequeno delay para o efeito fade in
 
-    def display_text_gradually(self, text, font, name="", name_font=None, color=(0, 0, 0), name_color=(0, 0, 0), line_spacing=5, max_lines=2, delay=0.05):
+    def display_text_with_choices(self, text, choices, font, name="", name_font=None, color=(0, 0, 0), name_color=(0, 0, 0), line_spacing=5, max_lines=2, delay=0.05):
         global rendered_text
         words = text.split(' ')
         lines = []
@@ -161,19 +160,36 @@ class DialogueBox:
             self.screen.blit(self.rect, (0, self.height - self.rect_height))
             pygame.display.update()
 
-            '''# Aguarda o jogador pressionar "espaço" para continuar
-            waiting = True
-            while waiting:
-                self.screen.blit(self.rect, (0, self.height - self.rect_height))
-                self.screen.blit(rendered_text, (20, y_offset - rendered_text.get_height() - line_spacing))
-                pygame.display.update()
+        # Exibe as opções de escolha
+        if choices:
+            self.display_choices(choices, font, color)
 
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        return
-                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                        waiting = False'''
+    def display_choices(self, choices, font, color):
+        choice_height = 30
+        choice_spacing = 10
+        start_y = self.height - self.rect_height + 10 + choice_height + choice_spacing
 
-    # Finaliza o diálogo após o texto
-    pygame.display.update()
+        for i, choice in enumerate(choices):
+            choice_text = font.render(f"{i + 1}. {choice}", True, color)
+            self.screen.blit(choice_text, (20, start_y + i * (choice_height + choice_spacing)))
+
+        pygame.display.update()
+
+    def hundle_choices(self, choices):
+        # Lógica para manipular a escolha do jogador
+        selected_choice = None
+        while selected_choice is None:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        selected_choice = 1
+                    elif event.key == pygame.K_2:
+                        selected_choice = 2
+                    elif event.key == pygame.K_3:
+                        selected_choice = 3
+
+        # Ajustar o indice de escolha conforme necessário
+        return selected_choice - 1
